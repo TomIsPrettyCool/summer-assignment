@@ -1,0 +1,32 @@
+<html>
+    <head>
+        {% block head %}
+        <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+        <link type="text/css" rel="stylesheet" href="{{ url_for('static', filename='css/materialize.min.css') }}" media="screen,projection" />
+        <link type="text/css" rel="stylesheet" href="{{ url_for('static', filename='css/custom.css') }}"/>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <script type="text/javascript" src="{{ url_for('static', filename='js/jquery.min.js') }}"></script>
+        <script type="text/javascript" src="{{ url_for('static', filename='js/materialize.min.js') }}"></script>
+        {% endblock %}
+        <title> {% block title %}Names for numbers{% endblock %} </title>
+
+    </head>
+
+    <body>
+         {% include 'nav.html' %}
+        <header>
+        {% block header %}{% endblock %}
+        </header>
+        <main>
+        {% block content %}{% endblock %}
+        </main>
+        <footer>
+        {% block footer %}{% endblock %}
+        </footer>
+
+
+        <script>
+            $(".button-collapse").sideNav();
+        </script>
+    </body>
+</html>
