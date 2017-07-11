@@ -14,7 +14,7 @@ bcrypt = Bcrypt(app)
 if os.environ.get("FLASK_APP_SECRE_KEY"):
     app.secret_key = os.environ.get("FLASK_APP_SECRE_KEY")
 else:
-    app.secret_key("devkey")
+    app.secret_key = "devkey"
 
 if os.environ.get("DATABASE_URL"):
     app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get("DATABASE_URL")
