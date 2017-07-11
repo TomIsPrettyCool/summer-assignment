@@ -59,12 +59,17 @@ class Question(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     question_type = db.Column(db.Integer)
     # Held as strings so anything can be thrown in.
-    question_value = db.Column(db.String(80))
-    question_answer = db.Column(db.String(80))
+    question_text = db.Column(db.String(80))
+    question_answer = db.Column(db.Integer)
     correct = db.Column(db.Boolean)
 
     # Link back to the student
     student_id = db.Column(db.Integer, db.ForeignKey('user.id'))
+
+    def __init__(self, question_text, question_answer):
+        self.question_type = 1
+        self.question_text = question_text
+        self.question_answer = question_answer
 
     @property
     def type_of_question(self):
