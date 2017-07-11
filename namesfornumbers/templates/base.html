@@ -3,7 +3,10 @@
         {% block head %}
         <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
         <link type="text/css" rel="stylesheet" href="{{ url_for('static', filename='css/materialize.min.css') }}" media="screen,projection" />
+
+        {% if no_side_nav %}{% else %}
         <link type="text/css" rel="stylesheet" href="{{ url_for('static', filename='css/custom.css') }}"/>
+        {% endif %}
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
         <script type="text/javascript" src="{{ url_for('static', filename='js/jquery.min.js') }}"></script>
         <script type="text/javascript" src="{{ url_for('static', filename='js/materialize.min.js') }}"></script>
@@ -13,9 +16,23 @@
     </head>
 
     <body>
-         {% include 'nav.html' %}
+        {% block sidenav %}
+        {% include 'nav.html' %}
+        {% endblock %}
         <header>
-        {% block header %}{% endblock %}
+        {% block header %}
+         {% with messages = get_flashed_messages() %} 
+         {% if messages %}
+         <div class="container">
+                {% for message in messages %}
+                    <div class="card red white-text">
+                        <div class="card-content"> {{ message }}</div>
+                    </div>
+                {% endfor %}
+         </div>
+        {% endif %} 
+        {% endwith %}
+        {% endblock %}
         </header>
         <main>
         {% block content %}{% endblock %}

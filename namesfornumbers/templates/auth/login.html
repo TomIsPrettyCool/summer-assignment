@@ -1,0 +1,27 @@
+{% extends 'base.html' %} 
+{% block sidenav %}{% endblock %} 
+{% block content %}
+
+<div class="container">
+                <div class="card center">
+                    <div class="card-content">
+                        <form method="POST" action="/auth/">
+                            <span class="card-title">Login</span>
+                            <p>Login with credentials. Lost password? Tough i'm not implementing password reset</p>
+                            {{ login_form.hidden_tag() }}
+                            <div class="input-field">
+                                {{ login_form.username(class='validate') }} 
+                                {{ login_form.username.label }}
+                            </div>
+                            <div class="input-field">
+                                {{ login_form.password(class="validate") }} 
+                                {{ login_form.password.label }}
+                            </div>
+                            <div class="card-action">
+                                <button class="btn black white-text" type="submit">Login</a>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+</div>
+    {% endblock %}

@@ -1,8 +1,8 @@
 """
 Models for the entire app, used to map Python objects onto
-the database using SQLAlchemy.
+the database and do nice things like add helper methods.
 """
-from . import db  # Get the database controller from the base app
+from . import db, bcrypt  # Get the database controller from the base app
 
 
 class User(db.Model):
@@ -13,26 +13,43 @@ class User(db.Model):
     name = db.Column(db.String(80))
     username = db.Column(db.String(20))
     password = db.Column(db.LargeBinary())
+    role = db.Column(db.String(10))
 
+    # Flask login attributes
+    is_authenticated = True
+    is_active = True
+    is_anonymous = False
 
-class Student(User):
-    """
-    Student model, used to hold student specific data and methods
-    """
-    id = db.Column(db.Integer, db.ForeignKey('user.id'), primary_key=True)
+    # Student attributes
     questions = db.relationship("Question", backref="student", lazy="dynamic")
-    teacher = db.Column(db.Integer, db.ForeignKey('teacher.id'))
+    teacher_id = db.Column(db.Integer, db.ForeignKey('user.id'))
 
-    def previous_questions():
-        pass
+    # Teacher attributes
+    students = db.relationship("User", backref="teacher", lazy="dynamic", 
+                               remote_side=id, uselist=True)  # This somehow made a many-to-many relationship
+                                                              # No idea why. 
+    def __init__(self, name, username, password, role, teacher=None):
+        self.name = name
+        self.username = username
+        self.password = self.create_password_hash(password)
+        self.role = role
 
+        if self.role == "student" and teacher:
+            # Add to teacher
+            self.teacher.id = teacher.id
 
-class Teacher(User):
-    """
-    Teacher model, used to hold teacher specific data and methods.
-    """
-    id = db.Column(db.Integer, db.ForeignKey('user.id'), primary_key=True)
-    students = db.relationship("Student", backref="teacher", lazy="dynamic")
+    def get_id(self):
+        """
+        Required for flask-login
+        """
+        return str(self.id)
+
+    def create_password_hash(self, password):
+        return bcrypt.generate_password_hash(password)
+
+    def check_password_hash(self, password):
+        print(type(self.password))
+        return bcrypt.check_password_hash(self.password, password)
 
 
 class Question(db.Model):
@@ -47,7 +64,7 @@ class Question(db.Model):
     correct = db.Column(db.Boolean)
 
     # Link back to the student
-    student = db.Column(db.Integer, db.ForeignKey('student.id'))
+    student_id = db.Column(db.Integer, db.ForeignKey('user.id'))
 
     @property
     def type_of_question(self):
