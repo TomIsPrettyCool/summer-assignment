@@ -1,3 +1,4 @@
+import os
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import LoginManager
@@ -10,8 +11,16 @@ app = Flask(__name__)
 bcrypt = Bcrypt(app)
 
 # Get database
-app.secret_key = "DEVKEYPLSCHNAGE"
+if os.environ.get("FLASK_APP_SECRE_KEY"):
+    app.secret_key = os.environ.get("FLASK_APP_SECRE_KEY")
+else:
+    app.secret_key("devkey")
+
+if os.environ.get("DATABASE_URL"):
+    app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get("DATABASE_URL")
+else:
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///database.db'
+
 db = SQLAlchemy(app)
 from .models import User, Question
 

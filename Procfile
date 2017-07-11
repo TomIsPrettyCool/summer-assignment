@@ -1,0 +1,1 @@
+web: gunicorn namesfornumbers:app --log-file -

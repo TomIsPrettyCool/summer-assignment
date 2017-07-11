@@ -1,4 +1,4 @@
-# Names for summers, summer assignment.
+# Names for numbers, summer assignment.
 Summer assignment for A-Level
 
 This project is my summer assignment for a-level. It is a simple web application based on the Flask framework designed to test children on
