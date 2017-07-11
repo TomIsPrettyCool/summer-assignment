@@ -5,4 +5,17 @@
         <h1 style="font-weight:100">Welcome!</h1>
     </div>
 </div>
+<div class="section">
+    <div class="container">
+        <p>This is a simple web app built for my summer assignment.</p>
+
+        {% if current_user.role == "teacher" %}
+            <p>You are currently logged on as a teacher, this means you can view scores of students that are assigned to you.
+                You can view per-pupil averages and induvidual scores</p>
+        {% elif current_user.role == "student" %}
+            <p>You are currently logged on as a student, this means you can take tests of 10 questions and view your scores for
+                the last 10 questions and each induvidual question.</p>
+        {% endif %}
+    </div>
+</div>
 {% endblock %}

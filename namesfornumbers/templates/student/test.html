@@ -1,2 +1,41 @@
 {% extends 'base.html' %}
 
+{% block header %}
+<div class="section blue">
+    <div class="container white-text">
+        <h1 style="font-weight:100">Test</h1>
+    </div>
+</div>
+{{ super() }}
+{% endblock %}
+
+{% block content %}
+<div class="container">
+    {% if question %}
+        <form method="POST" action="/student/test/">
+            <div class="card">
+                <div class="card-content">
+                    {{ answer_form.hidden_tag() }}
+                    <p>What is <strong>{{ question.question_text }}</strong> as a number? </p>
+                    {{ answer_form.errors.get('answer')[0] }}
+                    <div class="input-field">
+                        {{ answer_form.answer(autofocus=true, value="") }}
+                        {{ answer_form.answer.label }}
+                    </div>
+                    <div class="card-action">
+                        <button type="submit" class="btn black white-text">Answer</button>
+                    </div>
+                </div>
+            </div>
+        </form>
+        {% else %}
+        <h2>Get ready - you have 10 questions</h2>
+        <a href="/student/test?start=true" class="btn-large green white-text center">START</a>
+
+        {% endif %}
+
+        {% if test_data %}
+        <p>Question number: {{ test_data.question_count }} | Question ID: {{ test_data.question_id }}</p>
+        {% endif %}
+</div>
+{% endblock %}

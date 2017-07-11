@@ -1,7 +1,7 @@
 from namesfornumbers.models import User
 from .forms import LoginForm
 from flask import Blueprint, render_template, redirect, url_for, flash
-from flask_login import login_user
+from flask_login import login_user, logout_user, login_required
 
 login_blueprint = Blueprint("login", __name__, url_prefix='/auth')
 
@@ -21,3 +21,9 @@ def main_auth():
 
     return render_template(
         'auth/login.html', login_form=login_form, no_side_nav=True)
+
+@login_blueprint.route('/logout/')
+@login_required
+def logout():
+    logout_user()
+    return redirect(url_for("login.main_auth"))

@@ -1,0 +1,30 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="section blue white-text">
+<div class="container">
+     {% if jumbo %}
+     <i style="font-size :4rem" class="material-icons">assessment</i><h1 style="font-weight:100">You just scored: {{ percent_correct }}%</h1>
+     {% else %}
+     <h1 style="font-weight:100">Results</h1>
+    {% endif %}
+</div>
+</div>
+<div class="container">
+    <h3>Questions:</h3>
+    <ul class="collection">
+        {% for question in all_questions %}
+                <li class="collection-item">
+                    {{question.question_text}}
+                    <span class="badge">
+                        {% if question.correct %}
+                            <i class="material-icons green-text">done</i>
+                        {% else %}
+                            <i class="material-icons red-text">close</i>
+                        {% endif %}
+                    </span>
+                </li>
+        {% endfor %}
+    </ul>
+</div>
+{% endblock %}

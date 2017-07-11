@@ -1,0 +1,25 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="section blue white-text">
+    <div class="container">
+    <h1 style="font-weight:100">Students</h1>
+    </div>
+</div>
+
+<div class="section">
+    <div class="container">
+    <ul class="collection">
+        {% for username, student in student_scores.items() %}
+        <li class="collection-item">
+            {{ student[0].name }}
+            {% for score in student[1] %}
+                <span class="chip right">{{score}}%</span>
+            {% endfor %}
+                <div class="chip blue white-text right">{{ average | round(1, 'common') }}% avg</div>
+        </li>
+        {% endfor %}
+    </ul>
+    </div>
+</div>
+{% endblock %}
