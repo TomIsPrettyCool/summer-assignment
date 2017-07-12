@@ -22,7 +22,7 @@ def adduser():
         if input("Add teacher? (n, Y)").lower() == "y":
             teacher_username = input("teacher_username:")
             teacher = User.query.filter_by(username=teacher_username).first()
-            new_user.teacher = [teacher]
+            new_user.teacher.append(teacher)
 
     db.session.add(new_user)
     db.session.commit()
