@@ -12,7 +12,6 @@ def main_auth():
 
     if login_form.validate_on_submit():
         user = User.query.filter_by(username=login_form.username.data).first()
-        print(login_form.password.data + str(type(login_form.password.data)))
         if user and user.check_password_hash(login_form.password.data):
             login_user(user)
             return redirect(url_for('home.home'))
