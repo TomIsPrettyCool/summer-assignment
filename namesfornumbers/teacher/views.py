@@ -6,7 +6,13 @@ from functools import wraps
 teacher_blueprint = Blueprint("teacher", __name__, url_prefix='/teacher')
 
 
-def must_be_teacher(func):  # Check that the current user is actually a teacher
+def must_be_teacher(func):
+    """
+    Creates a decorator that checks if the current user is actually a teacher,
+    if not, it aborts the request with error 401 (Unauthorized).
+
+    If it is, the function then runs the function its decorating.
+    """
     @wraps(func)  # Use built-in boilerplate code
     def mustbestudent(*args, **kwargs):
         if current_user.role != "teacher":
@@ -22,6 +28,9 @@ def must_be_teacher(func):  # Check that the current user is actually a teacher
 @login_required
 @must_be_teacher
 def teacher_home():
+    """
+    Renders the default teacher home page
+    """
     return render_template('common/home.html', active="home")
 
 
@@ -29,6 +38,9 @@ def teacher_home():
 @login_required
 @must_be_teacher
 def results():
+    """
+    Renders the results of all the students.
+    """
     students = current_user.students
 
     student_scores = {
@@ -57,7 +69,6 @@ def results():
 
         average = sum(student_avg_list) / 3
 
-    print(student_scores)
     return render_template(
         'teacher/results.html',
         active='results',

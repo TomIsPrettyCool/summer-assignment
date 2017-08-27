@@ -9,32 +9,35 @@ class User(db.Model):
     """
     The base user model, used for auth and metadata.
     """
-    id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(80))
-    username = db.Column(db.String(20))
-    password = db.Column(db.LargeBinary())
-    role = db.Column(db.String(10))
+    id = db.Column(db.Integer, primary_key=True)  # All rows need a primary key
+    name = db.Column(db.String(80))  # The name of the student
+    username = db.Column(db.String(20))  # Username, should be uniqie
+    password = db.Column(db.LargeBinary())  # Passwords are encrypted so should be stored as binary
+    role = db.Column(db.String(10))  # Role, e.g. 'STU' = student
 
     # Flask login attributes
-    is_authenticated = True
-    is_active = True
-    is_anonymous = False
+    is_authenticated = True     # These are needed so the app can check if a user is logged in
+    is_active = True            # By calling User.is_authenticated, we can check that the user
+    is_anonymous = False        # is logged in. More info: https://flask-login.readthedocs.io
 
     # Student attributes
-    questions = db.relationship("Question", backref="student", lazy="dynamic")
-    teacher_id = db.Column(db.Integer, db.ForeignKey('user.id'))
+    questions = db.relationship("Question", backref="student", lazy="dynamic")  # Create a relationship between students and questions
+    teacher_id = db.Column(db.Integer, db.ForeignKey('user.id'))  # Need to know teacher
 
     # Teacher attributes
     students = db.relationship("User", backref="teacher", lazy="dynamic", 
                                remote_side=id, uselist=True)  # This somehow made a many-to-many relationship
                                                               # No idea why. 
     def __init__(self, name, username, password, role, teacher=None):
+        """
+        Initialise the User object with required values
+        """
         self.name = name
         self.username = username
-        self.password = self.create_password_hash(password)
+        self.password = self.create_password_hash(password)  # Assigns hashed value as password
         self.role = role
 
-        if self.role == "student" and teacher:
+        if self.role == "student" and teacher:  # We check if we need to add a teacher
             # Add to teacher
             self.teacher.id = teacher.id
 
@@ -45,10 +48,15 @@ class User(db.Model):
         return str(self.id)
 
     def create_password_hash(self, password):
+        """
+        Uses the bcrypt libary to generate a secure password hash
+        """
         return bcrypt.generate_password_hash(password)
 
     def check_password_hash(self, password):
-        print(type(self.password))
+        """
+        Checks the password matches the hash
+        """
         return bcrypt.check_password_hash(self.password, password)
 
 

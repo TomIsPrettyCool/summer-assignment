@@ -122,6 +122,7 @@ def test():
 def results():
     completed_questions = current_user.questions.order_by(desc(Question.id)).limit(10)
     all_questions = current_user.questions.order_by(desc(Question.id)).limit(100)
+
     def decimal_correct(completed_questions):
         amount_correct = 0
         for question in completed_questions:
@@ -132,6 +133,7 @@ def results():
 
     percent_correct = decimal_correct(completed_questions) * 10
     jumbo = request.args.get('jumbo')
+    
     return render_template(
         'student/results.html',
         active="results",
