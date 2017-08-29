@@ -1,10 +1,9 @@
 from .forms import AnswerForm
 from .utils import generate_and_add_question
-from namesfornumbers import db, app, Question
-from flask import Blueprint, render_template, session, abort, flash, redirect, url_for, request
+from namesfornumbers import db, app, Question, User
+from flask import Blueprint, render_template, session, flash, redirect, url_for, request
 from flask_login import login_required, current_user
 from itsdangerous import Serializer
-from functools import wraps
 from sqlalchemy import desc
 
 student_blueprint = Blueprint("student", __name__, url_prefix='/student')
@@ -12,28 +11,16 @@ student_blueprint = Blueprint("student", __name__, url_prefix='/student')
 s = Serializer(app.secret_key)
 
 
-def must_be_student(func):  # Check that the current user is actually a student
-    @wraps(func)  # Use built-in boilerplate code
-    def mustbestudent(*args, **kwargs):
-        if current_user.role != "student":
-            return abort(401)
-        else:
-            return func(*args,
-                        **kwargs)  # If all fine, execute function anyway
-
-    return mustbestudent
-
-
 @student_blueprint.route('/home/')
 @login_required
-@must_be_student
+@User.must_be_role("student")
 def student_home():
     return render_template("common/home.html", active="home")
 
 
 @student_blueprint.route('/test/', methods=["GET", "POST"])
 @login_required
-@must_be_student
+@User.must_be_role("student")
 def test():
     """
     Not proud of this - needs to be refractored, probaly
@@ -118,7 +105,7 @@ def test():
 
 @student_blueprint.route('/results/')
 @login_required
-@must_be_student
+@User.must_be_role("student")
 def results():
     completed_questions = current_user.questions.order_by(desc(Question.id)).limit(10)
     all_questions = current_user.questions.order_by(desc(Question.id)).limit(100)
@@ -133,7 +120,7 @@ def results():
 
     percent_correct = decimal_correct(completed_questions) * 10
     jumbo = request.args.get('jumbo')
-    
+
     return render_template(
         'student/results.html',
         active="results",

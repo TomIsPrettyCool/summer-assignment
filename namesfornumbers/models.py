@@ -3,6 +3,9 @@ Models for the entire app, used to map Python objects onto
 the database and do nice things like add helper methods.
 """
 from . import db, bcrypt  # Get the database controller from the base app
+from flask import abort
+from flask_login import current_user
+from functools import wraps
 
 
 class User(db.Model):
@@ -58,6 +61,19 @@ class User(db.Model):
         Checks the password matches the hash
         """
         return bcrypt.check_password_hash(self.password, password)
+    
+    @staticmethod
+    def must_be_role(role):
+        def must_be_role_decorator(func):  # Check that the current user is actually a student
+            @wraps(func)  # Use built-in boilerplate code
+            def role_checker(*args, **kwargs):
+                if current_user.role != role:
+                    return abort(403)
+                else:
+                    return func(*args, **kwargs)  # If all fine, execute function anyway
+
+            return role_checker
+        return must_be_role_decorator
 
 
 class Question(db.Model):

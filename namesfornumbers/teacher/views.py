@@ -1,32 +1,14 @@
 from namesfornumbers import app, db, Question, User
-from flask import Blueprint, render_template
+from flask import Blueprint, render_template, abort
 from flask_login import current_user, login_required
 from functools import wraps
 
 teacher_blueprint = Blueprint("teacher", __name__, url_prefix='/teacher')
 
 
-def must_be_teacher(func):
-    """
-    Creates a decorator that checks if the current user is actually a teacher,
-    if not, it aborts the request with error 401 (Unauthorized).
-
-    If it is, the function then runs the function its decorating.
-    """
-    @wraps(func)  # Use built-in boilerplate code
-    def mustbestudent(*args, **kwargs):
-        if current_user.role != "teacher":
-            return abort(401)
-        else:
-            return func(*args,
-                        **kwargs)  # If all fine, execute function anyway
-
-    return mustbestudent
-
-
 @teacher_blueprint.route('/home/')
 @login_required
-@must_be_teacher
+@User.must_be_role("teacher")
 def teacher_home():
     """
     Renders the default teacher home page
@@ -36,7 +18,7 @@ def teacher_home():
 
 @teacher_blueprint.route('/results/')
 @login_required
-@must_be_teacher
+@User.must_be_role("teacher")
 def results():
     """
     Renders the results of all the students.
