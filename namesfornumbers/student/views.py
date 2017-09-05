@@ -30,7 +30,7 @@ def test():
     if "test" in session:
         test_data = session["test"]
 
-        if test_data["question_count"] == 10:
+        if test_data["question_count"] == 11:  # Get unused questions
             unused_question = Question.query.get(int(test_data["question_id"]))
             db.session.delete(unused_question)
             db.session.commit()  # Delete unused record
