@@ -25,11 +25,10 @@ class User(db.Model):
 
     # Student attributes
     questions = db.relationship("Question", backref="student", lazy="dynamic")  # Create a relationship between students and questions
-    teacher_id = db.Column(db.Integer, db.ForeignKey('user.id'))  # Need to know teacher
 
     # Teacher attributes
     students = db.relationship("User", backref="teacher", lazy="dynamic", 
-                               remote_side=id, uselist=True)  # This somehow made a many-to-many relationship
+                               remote_side=[id], uselist=True)  # This somehow made a many-to-many relationship
                                                               # No idea why. 
     def __init__(self, name, username, password, role, teacher=None):
         """
@@ -39,11 +38,7 @@ class User(db.Model):
         self.username = username
         self.password = self.create_password_hash(password)  # Assigns hashed value as password
         self.role = role
-
-        if self.role == "student" and teacher:  # We check if we need to add a teacher
-            # Add to teacher
-            self.teacher.id = teacher.id
-
+        
     def get_id(self):
         """
         Required for flask-login
